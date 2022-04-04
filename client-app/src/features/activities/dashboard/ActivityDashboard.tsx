@@ -5,12 +5,11 @@ import { useStore } from "../../../app/stores/store";
 import { Activity } from "../../../models/activity";
 import ActivityDetails from "../details/ActivityDetails";
 import ActivityForm from "../form/ActivityForm";
+import ActivityFilter from "./ActivityFilter";
 import ActivityList from "./ActivityList";
-interface Props{
-    activities: Activity[];
-}
 
- export default observer ( function ActivtyDashboard({activities}: Props){
+
+ export default observer ( function ActivtyDashboard(){
     const {activityStore} = useStore();
     const {selectedActivity, editMode,createActivity, updateActivity} = activityStore;
      return (
@@ -19,15 +18,13 @@ interface Props{
                <ActivityList/>
              </Grid.Column>
              <Grid.Column width = "6">
-                 { selectedActivity && !editMode &&
+                 {/* { selectedActivity && !editMode &&
                  <ActivityDetails/>}
                  {editMode &&
                  <ActivityForm  />
-                 }
-                 
+                 } */}
+                 <ActivityFilter/>
              </Grid.Column>
-            
          </Grid>
      )
- }
- )
+ } )
