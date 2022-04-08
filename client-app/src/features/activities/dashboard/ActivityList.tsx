@@ -16,6 +16,7 @@ export default observer(function ActivityList(){
                <Header sub color = 'teal'>
                    {group}
                 </Header>
+                
                 {activites.map(activity => (
                     <ActivityListItem key = {activity.id} activity={activity} />
                 ))}

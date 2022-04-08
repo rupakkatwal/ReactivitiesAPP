@@ -1,7 +1,29 @@
-import axios, { AxiosResponse } from "axios";
-import { Activity } from "../../models/activity";
-axios.defaults.baseURL = 'https://localhost:7294/api/';
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { profile } from "console";
+import { Activity, ActivityFormValues } from "../../models/activity";
+import { PaginatedResult } from "../../models/pagination";
+import { Photo, Profile } from "../../models/profile";
+import { UserActivity } from "../../models/UserActivity";
+import { User, UserFormValues } from "../../models/users";
+import { store } from "../stores/store";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
+
+axios.interceptors.request.use(config => {
+    const token =  store.userStore.token;
+    if(token) config.headers!.Authorization = `Bearer ${token}`
+    return config;
+})
+axios.interceptors.response.use(async response => {
+    const pagination =   response.headers['pagination']
+    if(pagination)
+    {
+        response.data =  new PaginatedResult(response.data, JSON.parse(pagination))
+        return response as AxiosResponse<PaginatedResult<any>>
+    }
+    return response;
+},(error: AxiosError ) =>console.log(error)
+);
 
 const requests = {
     get: <T>(url: string) => axios.get<T>(url).then(responseBody),
@@ -11,16 +33,45 @@ const requests = {
 }
 
 const Activities = {
-    list: () => requests.get<Activity[]>('/activity'),
+    list: (params: URLSearchParams) => axios.get<PaginatedResult<Activity[]>>('/activity', {params}).then(responseBody),
     details:(id:string) => requests.get<Activity>(`/activity/${id}`),
-    create: (activity: Activity) => requests.post<void>('/activity',activity),
-    update: (activity: Activity) => requests.put<void>(`/activity/${activity.id}`,activity),
+    create: (activity: ActivityFormValues) => requests.post<void>('/activity',activity),
+    update: (activity: ActivityFormValues) => requests.put<void>(`/activity/${activity.id}`,activity),
     delete: (id:string) => requests.del<void>(`/activity/${id}`),
+    attend: (id: string) => requests.post<void>(`/activity/${id}/attend`,{}),
+
+}
+const Account  =  {
+    current: () => requests.get<User>('/account/getcurrentuser'),
+    login:(user:UserFormValues) => requests.post<User>('/account/login',user),
+    register:(user:UserFormValues) => requests.post<User>('/account/register',user)
+}
+
+const Profiles = {
+    get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+    uploadPhoto: (file: Blob) => {
+        let formData  =  new FormData();
+        formData.append('File', file);
+        return axios.post<Photo>('photos', formData,{
+            headers:{'Content-type': 'multipart/form-data'}
+        })
+
+    },
+    updateProfile:(profile:Partial<Profile>) => requests.put(`/profiles`,profile),
+    setMainPhoto: (id:string) => requests.post(`/photos/${id}/setmain`,{}),
+    deletePhoto: (id:string) => requests.del(`/photos/${id}`),
+    updateFollowing: (username:string) => requests.post(`/follow/${username}`,{}),
+    listFollowings: (username:string, predicate: string) => requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
+    listActivities: (username:string, predicate: string) => requests.get<UserActivity[]>(`/profiles/${username}/activities?predicate=${predicate}`)
 
 }
 
+
+
 const agent = {
-    Activities
+    Activities,
+    Account,
+    Profiles
 }
 
 export default agent;

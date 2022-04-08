@@ -10,17 +10,27 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import './style.css';
+import LoginForm from '../../features/users/LoginForm';
+import ModalContainer from '../common/modals/ModalContainer';
+import ProfilePage from '../../features/profiles/ProfilePage';
 
 function App() {
   const location =  useLocation();
-  const {activityStore} = useStore();
+  const {activityStore,userStore} = useStore();
   const{loadActivities,activityRegistry} =  activityStore
   
   useEffect(() => {
-    if(activityRegistry.size <= 1) loadActivities();
-  }, [activityStore])
+    if(userStore.token){
+      userStore.getUser().finally(()=>userStore.setAppLoaded())
+    }
+    else{
+      userStore.setAppLoaded();
+    }
+    
+  }, [userStore])
 
-  if(activityStore.loadingIntial) return <LoadingComponent content ='Loadingapp'/>
+  if(!userStore.appLoaded) return <LoadingComponent content ='Loading app....'/>
+
 
   const onHomePage = window.location.pathname === "/" || window.location.pathname === ""
 
@@ -30,12 +40,15 @@ function App() {
     : <Navbar/>}
      
      <Container style = {{marginTop: '7em'}}>
+     <ModalContainer/>
      <Routes>
        <Route path = '/' element = {<HomePage/>}/>
        <Route path = '/activities' element = {<ActivtyDashboard/>}/>
        <Route  path = '/activities/:id' element = {<ActivityDetails/>}/>
+       <Route  path = '/profiles/:username' element = {<ProfilePage/>}/>
        <Route  key = {location.key} path = '/createactivity' element = {<ActivityForm/>}/>
        <Route path = '/manage/:id' element = {<ActivityForm/>}/>
+       <Route path = '/login' element = {<LoginForm/>}/>
      </Routes>
      </Container>
    

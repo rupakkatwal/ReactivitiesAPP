@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom';
 import './app/layout/style.css';
 import App from './app/layout/App';
 import reportWebVitals from './reportWebVitals';
+import 'react-datepicker/dist/react-datepicker.css'
 import { store, StoreContext } from './app/stores/store';
 import { BrowserRouter } from 'react-router-dom';
 
