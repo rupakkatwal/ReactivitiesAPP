@@ -2,6 +2,7 @@ import { profile } from "console";
 import { createContext, useContext } from "react";
 import ActivityStore from "./activtityStore";
 import CommentStore from "./commentStore";
+import CommonStore from "./commonStore";
 import modalStore from "./modalStore";
 import ProfileStore from "./profileStore";
 import UserStore from "./userStore";
@@ -12,6 +13,7 @@ interface Store{
     modalStore: modalStore
     profileStore: ProfileStore
     commentStore: CommentStore
+    commonStore: CommonStore
 }
 
 export const store: Store = {
@@ -19,7 +21,8 @@ export const store: Store = {
     userStore: new UserStore(),
     modalStore: new modalStore(),
     profileStore: new ProfileStore(),
-    commentStore: new CommentStore()
+    commentStore: new CommentStore(),
+    commonStore: new CommonStore()
 
 }
 

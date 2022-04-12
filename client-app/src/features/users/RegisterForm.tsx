@@ -16,7 +16,7 @@ export default observer(function RegisterForm(){
     const validationSchema  =  Yup.object({
         displayName: Yup.string().required('The display name is required'),
         userName: Yup.string().required('The UserName  is required'),
-        email: Yup.string().required('The Email  is required').nullable(),
+        email: Yup.string().email('Invalid email').required('The Email  is required').nullable(),
         password: Yup.string().required('The Password  is required')
     })
     return(
@@ -24,7 +24,7 @@ export default observer(function RegisterForm(){
          <Formik
          validationSchema={validationSchema} enableReinitialize 
         initialValues={{displayName:'',userName:'',email:'', password:'', error: null}}
-        onSubmit = {(values,{setErrors})  => userStore.register(values).catch(error => console.log(error))}
+        onSubmit = {(values,{setErrors})  => userStore.register(values).catch(error => setErrors({error}))}
         >
             {({handleSubmit, errors,isValid, isSubmitting,dirty,touched}) =>(
                 <Form className="ui form error" onSubmit={handleSubmit} autoComplete='off'>

@@ -13,7 +13,7 @@ import ActivityListItemPlaceholder from "./AcitivityListItemPlaceholder";
  export default observer ( function ActivtyDashboard(){
     const { activityStore } = useStore();
     const { loadActivities, activityRegistry, setPagingParams,pagination} = activityStore;
-    const[loadingNext, setLoadingNext] = useState(false);
+    const [loadingNext, setLoadingNext] = useState(false);
 
     function handleGetNext(){
         setLoadingNext(true)

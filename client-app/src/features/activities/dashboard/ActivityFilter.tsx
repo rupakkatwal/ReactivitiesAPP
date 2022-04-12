@@ -3,7 +3,10 @@ import React from "react";
 import Calendar from "react-calendar";
 import { Header, Menu } from "semantic-ui-react";
 import { useStore } from "../../../app/stores/store";
+
+
 export default observer(function ActivityFilter(){
+
     const{activityStore:{predicate, setPredicate}} =  useStore();
 
     return(
@@ -13,7 +16,7 @@ export default observer(function ActivityFilter(){
             <Menu.Item
              content = "All Activities"
              active = {predicate.has('all')}
-             onClick = {() => setPredicate('all', 'true')}
+             onClick = {() => setPredicate('all', 'true')}ß
              />
               <Menu.Item
              content = " I am going"

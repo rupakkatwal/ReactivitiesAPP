@@ -50,12 +50,15 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if(await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+            var userEmailAlreadyExists = await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email);
+            var userNameAlreadyExists = await _userManager.Users.AnyAsync(x=> x.UserName == registerDto.UserName);
+
+            if(userEmailAlreadyExists)
             {
                 ModelState.AddModelError("email","Email already exist");
                 return ValidationProblem();
             }
-            if(await _userManager.Users.AnyAsync(x=> x.UserName == registerDto.UserName))
+            if(userNameAlreadyExists)
             {
                  ModelState.AddModelError("username","UserName already exist");
                 return ValidationProblem();
@@ -66,7 +69,7 @@ namespace API.Controllers
                 Email = registerDto.Email,
                 UserName = registerDto.UserName
             };
-
+            
             var result = await _userManager.CreateAsync(user,registerDto.Password);
 
             if(result.Succeeded)
@@ -74,8 +77,7 @@ namespace API.Controllers
                 return CreateUserObject(user);
                
             }
-            ModelState.AddModelError("password","Password must be 8 character and combined with uppercase,number and special character");
-            return BadRequest(ModelState);
+            return BadRequest(result.Errors);
         }
 
 

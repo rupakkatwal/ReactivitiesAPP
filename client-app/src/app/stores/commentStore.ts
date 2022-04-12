@@ -3,6 +3,7 @@ import { buildQueries } from "@testing-library/react";
 import { th } from "date-fns/locale";
 import { makeAutoObservable, runInAction } from "mobx";
 import { ChatComment } from "../../models/comment";
+import { ServerError } from "../../models/serverErrors";
 import { store } from "./store";
 
 export default class CommentStore {
@@ -12,6 +13,7 @@ export default class CommentStore {
     constructor(){
         makeAutoObservable(this);
     }
+
 
     createHubConnection = (activityId: string) => {
         if(store.activityStore.selectedActivity)

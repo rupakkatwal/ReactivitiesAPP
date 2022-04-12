@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -10,12 +11,12 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<ActivityDto>
+        public class Query : IRequest<Result<ActivityDto>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, ActivityDto>
+        public class Handler : IRequestHandler<Query,Result<ActivityDto>>
         {
             private readonly DataContext _context;
              public readonly IMapper _mapper;
@@ -26,13 +27,13 @@ namespace Application.Activities
                _context = context;
                _userAccessor =userAccessor;
             }
-            public async Task<ActivityDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
             {
               var activities = await _context.Activities
                     .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider,new{currentUserName = _userAccessor.GetUsername()})
                     .FirstOrDefaultAsync(x=> x.Id ==  request.Id);
 
-               return activities;
+               return Result<ActivityDto>.Success(activities);
             }
         }
     }

@@ -1,11 +1,15 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { profile } from "console";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Activity, ActivityFormValues } from "../../models/activity";
 import { PaginatedResult } from "../../models/pagination";
 import { Photo, Profile } from "../../models/profile";
 import { UserActivity } from "../../models/UserActivity";
 import { User, UserFormValues } from "../../models/users";
-import { store } from "../stores/store";
+import { store, useStore } from "../stores/store";
+
+
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
@@ -22,8 +26,51 @@ axios.interceptors.response.use(async response => {
         return response as AxiosResponse<PaginatedResult<any>>
     }
     return response;
-},(error: AxiosError ) =>console.log(error)
-);
+},(error: AxiosError)=>{
+    const{data, status,config} = error.response!
+    switch(status){
+        case 400:
+            if(typeof data === 'string'){
+                toast.error(data)
+            }
+            if(config.method == 'get' && data.errors.hasOwnProperty("id"))
+            {
+                window.history.replaceState({}, document.title, "/" + "not-found");
+                window.location.reload() 
+            }
+            if(data.errors)
+            {
+                const modalStateErrors = [];
+                for(const key in data.errors)
+                {
+                    if(data.errors[key])
+                    {
+                        modalStateErrors.push(data.errors[key])
+                    }
+                }
+                
+                throw modalStateErrors.flat();
+                
+            }
+            break;
+        case 401:
+            toast.error('unauthorized');
+            break;
+        case 404:
+            // let navigate =  useNavigate();
+            // navigate('/not-found');
+            window.history.replaceState({}, document.title, "/" + "not-found");
+            window.location.reload() 
+            break;
+        case 500:
+            store.commonStore.setServerError(data);
+            
+            window.history.replaceState({}, document.title, "/" + "server-error");
+            window.location.reload() 
+            break;
+    }
+    return Promise.reject(error)
+});
 
 const requests = {
     get: <T>(url: string) => axios.get<T>(url).then(responseBody),
@@ -44,7 +91,7 @@ const Activities = {
 const Account  =  {
     current: () => requests.get<User>('/account/getcurrentuser'),
     login:(user:UserFormValues) => requests.post<User>('/account/login',user),
-    register:(user:UserFormValues) => requests.post<User>('/account/register',user)
+    register:(user:UserFormValues) => requests.post<User>('/account/register',user)    
 }
 
 const Profiles = {

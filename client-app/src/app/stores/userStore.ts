@@ -87,7 +87,9 @@ export default class  UserStore{
             window.location.reload()  
             store.modalStore.closeModal()
         } catch (error) {
-          throw error;  
+            const{data} = error.response!
+            const result = data.map((a:any)=> a.description)
+            throw result
         }
     }
 
