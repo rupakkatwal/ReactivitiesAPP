@@ -1,5 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { useNavigate } from "react-router-dom";
+import { createNoSubstitutionTemplateLiteral } from "typescript";
 import { User, UserFormValues } from "../../models/users";
 import agent from "../api/agent";
 import { store } from "./store";
@@ -53,6 +54,8 @@ export default class  UserStore{
             window.location.reload()       
             store.modalStore.closeModal()
         } catch (error) {
+
+         console.log(error)
           throw error;  
         }
     }

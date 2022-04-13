@@ -143,25 +143,22 @@ export default class ProfileStore{
     updateFollowing = async (username:string, following:boolean) => {
         this.loading = true
         try {
-            await agent.Profiles.updateFollowing(username)
-            store.activityStore.updateAttendeeFollwing(username)
-            runInAction(()=> {
-                if(this.profile && this.profile.userName !== store.userStore.user?.userName && this.profile.userName === username)
-                {
+            await agent.Profiles.updateFollowing(username);
+            store.activityStore.updateAttendeeFollwing(username);
+            runInAction(() => {
+                if (this.profile && this.profile.userName !== store.userStore.user?.userName && this.profile.userName === username) {
                     following ? this.profile.followersCount++ : this.profile.followersCount--;
-                    this.profile.following = !this.profile.following
+                    this.profile.following = !this.profile.following;
                 }
-                if(this.profile && this.profile.userName == store.userStore.user?.userName)
-                {
-                    following? this.profile.followersCount++ : this.profile.followersCount--
+                if (this.profile && this.profile.userName === store.userStore.user?.userName) {
+                    following ? this.profile.followingCount++ : this.profile.followingCount--;
                 }
-                this.followings.forEach(profile =>{
-                    if(profile.userName === username){
-                        profile.following ? profile.followersCount-- : profile.followingCount++
-                        profile.following = !profile.following
+                this.followings.forEach(profile => {
+                    if (profile.userName === username) {
+                        profile.following ? profile.followersCount-- : profile.followersCount++;
+                        profile.following = !profile.following;
                     }
                 })
-                
                 this.loading = false;
             })
         } catch (error) {

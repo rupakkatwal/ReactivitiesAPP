@@ -54,7 +54,7 @@ axios.interceptors.response.use(async response => {
             }
             break;
         case 401:
-            toast.error('unauthorized');
+            // toast.error('unauthorized');
             break;
         case 404:
             // let navigate =  useNavigate();

@@ -32,7 +32,7 @@ export default observer(function LoginForm(){
                     <MyTextInput name='password' placeholder="password" type='password' />
                     <ErrorMessage 
                        name="error" render={()=>
-                        <ValidationErrors errors= {errors.error}/>
+                        <Label basic color='red' content= {errors.error}/>
                     }
                     />
                     <Button

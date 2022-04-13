@@ -30,6 +30,7 @@ namespace Application.Activities
 
             public async Task<PagedList<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
             {
+                
                 var queries =  _context.Activities
                     .Where(d=> d.Date >= request.Params.StartDate)
                     .OrderBy(d=> d.Date)

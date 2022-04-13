@@ -37,7 +37,7 @@ builder.Services.AddControllers(opt =>{
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
-  options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+  options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddCors( opt =>{
     opt.AddPolicy("CorsPolicy", policy =>
     {
@@ -108,7 +108,7 @@ if (app.Environment.IsDevelopment())
    
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseRouting();
+  
     
 
 }
@@ -135,14 +135,15 @@ using(var scope =  app.Services.CreateScope())
     
 
 }
+app.UseRouting();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseHttpsRedirection();
-
-
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapHub<ChatHub>("/chat");
-
+app.MapFallbackToController("Index","Fallback");
 app.MapControllers();
 
 app.Run();

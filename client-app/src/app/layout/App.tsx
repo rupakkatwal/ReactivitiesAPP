@@ -18,6 +18,8 @@ import TestErrors from '../../features/errors/TestError'
 import { ToastContainer } from 'react-toastify'
 import NotFound from '../../features/errors/NotFound'
 import ServerError from '../../features/errors/ServerError'
+import 'react-calendar/dist/Calendar.css';
+
 
 function App() {
     const location = useLocation()
