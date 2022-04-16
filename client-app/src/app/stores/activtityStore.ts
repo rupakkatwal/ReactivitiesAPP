@@ -46,7 +46,6 @@ export default class ActivityStore{
                 if(key !== 'startDate') this.predicate.delete(key);
             })
         }
-        console.log(value)
         switch(predicate){
             case 'all':
                 resetPredicate();

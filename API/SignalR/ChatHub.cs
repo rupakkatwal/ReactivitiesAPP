@@ -31,7 +31,7 @@ namespace API.SignalR
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();
-            var activityId = _httpContextAccessor.HttpContext.Request.Query["activityId "];
+            var activityId = _httpContextAccessor.HttpContext.Request.Query["activityId"];
             await Groups.AddToGroupAsync(Context.ConnectionId, activityId);
             var result = await _mediator.Send(new List.Query{ActivityId = Guid.Parse(activityId)});
             await Clients.Caller.SendAsync("LoadComments", result.Value!);
