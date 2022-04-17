@@ -3,7 +3,6 @@ import { buildQueries } from "@testing-library/react";
 import { th } from "date-fns/locale";
 import { makeAutoObservable, runInAction } from "mobx";
 import { ChatComment } from "../../models/comment";
-import { ServerError } from "../../models/serverErrors";
 import { store } from "./store";
 
 export default class CommentStore {
@@ -18,7 +17,7 @@ export default class CommentStore {
         if(store.activityStore.selectedActivity)
         {
             this.hubConnection  =  new HubConnectionBuilder()
-                .withUrl(process.env.REACT_APP_CHAT_URL + '?activityId=' + activityId,{
+                .withUrl(process.env.REACT_APP_CHAT_URL +'?activityId=' + activityId,{
                     accessTokenFactory: () => store.userStore.user?.token!
                 })
                 .withAutomaticReconnect()
