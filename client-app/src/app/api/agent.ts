@@ -54,7 +54,9 @@ axios.interceptors.response.use(async response => {
             }
             break;
         case 401:
-            // toast.error('unauthorized');
+            toast.error('You have to login first');
+            window.history.replaceState({}, document.title, "/");
+            window.location.reload() 
             break;
         case 404:
             // let navigate =  useNavigate();

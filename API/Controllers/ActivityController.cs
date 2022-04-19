@@ -9,7 +9,7 @@ using persistence;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
+    
     public class ActivityController : BaseApiController
     {
         
